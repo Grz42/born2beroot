@@ -1,0 +1,136 @@
+A Virtual Machine (VM) is a compute resource that uses software instead of a physical computer to run programs and deploy 
+apps. Each virtual machine runs its own operating system and functions separately from the other VMs, even when they are all
+running on the same host. For example, you can run a virtual MacOS machine on a physical PC. 
+
+A VM utiliza software ao inves de um computador fisico para correr programas e apps. Cada VM corre o seu proprio OS
+e as suas funções individualmente perante outras VM's, mesmo que estejam todas a correr no mesmo HOST. Basicamente pode se correr
+varios OS no mesmo computador como MacOS ou Debian neste caso.
+
+Q: How does a VM work?
+A: VM working through "Virtualization" technology. Virtualization uses software to simulate virtual hardware that allows 
+VMs to run on a single host machine.
+
+Q: Why Debian?
+A: It's easier to install and configure than CentOS (and i haven't use CentOS befoe)
+
+É mais facil de instalar e configurar que o CentOS, e como já tinha alguma ideia de como usar Debian preferi esse.
+
+Q: Basic differences between CentOS and Debian?
+A: The differences stand in the architectures they support, their package management: CentOS uses RPM package format and
+YUM/DNF as the package manager, as Debian uses DEB package format and dpkg/APT as the package manager.
+Both offer full-feature package management with network-based repository support.
+They also have different default filesystems as the CentOS uses XFS and Debian EXT4, they are both popular and well
+supported so it isn't that big of a difference but still there are some who prefer one over another.
+Another difference is their Kernel, as CentOS uses version 4.18 and Debian 4.19.
+One feature that gives Debian an advantage over CentOS is it major upgrades, as Debian supports upgrades from a major
+version to another, and CentOS doesent.
+As for support CentOS is largely community supported but it as kind of a CentOS commercial support as for Debian is all
+based on community and sometimes Debian offer a list of consultants that can be hired to resolve issues, but those operate
+independently.
+
+Q: Purpose os VM's?
+A: VMs may be deployed to accommodate different levels of processing power needs, to run software that requires a different
+operating system, or to test applications in a safe, sandboxed environment. 
+
+VM's podem ser usadas para preencher diversas necessidades, para correr software que requer um sistema operativo diferente
+do host, ou para testar aplicações de uma maneira segura/estavel num ambiente sandbox.
+
+Q: Diff between aptitude and apt?
+A: APT (advanced package tool) is the main command-line package manager for Debian and its derivatives. 
+It provides command-line tools for searching, managing and querying information about packages.
+
+Aptitude is a high-level, featureful package manager for Debian GNU/Linux systems.
+- Interactive
+- Search for packages
+- many other features
+
+Q: What is AppArmor?
+A: AppArmor ("Application Armor") is a Linux kernel security module that allows the system administrator to restrict programs'
+capabilities with per-program profiles. https://en.wikipedia.org/wiki/AppArmor
+
+Q: What is SSH?
+A: SSH, also known as Secure Shell or Secure Socket Shell, is a network protocol that gives users, particularly system 
+administrators, a secure way to access a computer over an unsecured network.
+(read more: https://searchsecurity.techtarget.com/definition/Secure-Shell)
+
+
+
+
+/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+| You have to create a new user here.        |
+| $ sudo adduser username                    | <- creating new user (yes (no))
+| $ sudo addgroup groupname                  | <- creating a new group
+| $ sudo chage -l username                   | <- Verify password expire info for new user
+| $ sudo adduser username sudo               |
+| $ sudo adduser username user42             | <- assign new user to sudo and user42 groups
+| $ sudo deluser username                    | <- delete the new user
+\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+
+Q: How your script works?
+A: ... README.md
+
+                                           ##################################
+                                           #    Part two: What to check?    #
+                                           ##################################
+|***************************************|
+| 1) lsblk                              1 <- Check partitions
+| 2) sudo aa-status                     2 <- AppArmor status
+| 3) getent group sudo                  3 <- sudo group users
+| 4) getent group user42                4 <- user42 group users
+| 5) sudo service ssh status            5 <- ssh status, yep
+| 6) sudo ufw status                    6 <- ufw status
+| 7) ssh username@ipadress -p 4242      7 <- connect to VM from your host (physical) machine via SSH
+| 8) nano /etc/sudoers.d/<filename>     8 <- yes, sudo config file. You can $ ls /etc/sudoers.d first
+| 9) nano /etc/login.defs               9 <- password expire policy
+| 10) nano /etc/pam.d/common-password  10 <- password policy
+| 11) sudo crontab -l                  11 <- cron schedule
+|***************************************|
+
+
+I think this one need an addition to make it more easy to pass evaluation. So, here we are on our checklist and his commands.
+
+How to change hostname?
+[$sudo nano /etc/hostname]
+
+Where is sudo logs in /var/log/sudo?
+[$cd /var/log/sudo/00/00 && ls]
+You will see a lot of directories with names like 01 2B 9S 4D etc. They contain the logs we need.
+[$ sudo apt update]
+[$ ls]
+Now you see that we have a new directory here.
+[$ cd <nameofnewdirectory> && ls]
+[$ cat log] <- Input log
+[$ cat ttyout] <- Output log
+
+
+UFW, or uncomplicated firewall, is a frontend for managing firewall rules in Debian.
+UFW is used through the command line (although it has GUIs available), and aims to make firewall configuration easy.
+
+How to add and remove port 8080 in UFW?
+[$ sudo ufw allow 8080] <- allow
+[$ sudo ufw status] <- check
+[$ sudo ufw deny 8080] <- deny (yes yes)
+
+How to run script every minute?
+[$ sudo crontab -e]
+Remove or commit previous cron "schedule" and add next lines in crontab file
+First off [$ sudo crontab -e] (yep, you need sudo to make cron runnig script as root.[$ crontab-e] will open another file that will run your script as user). Set nano/vi as your text editor for cron and add next lines in your crontab file:
+
+@reboot /path/to/file/monitoring.sh
+*/10 * * * * /path/to/file/monitoring.sh
+To stop script running on boot you just need to remove or commit
+
+|********************************|
+| @reboot /path/to/monitoring.sh |
+|********************************|
+line in crontab file.
+
+
+
+
+
+
+
+
+
+
